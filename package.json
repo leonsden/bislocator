@@ -4,7 +4,8 @@
   "private": true,
   "description": "Daily Wowhead BiS scraper for Beast Mastery Hunter",
   "scripts": {
-    "scrape:bm": "node scripts/scrape-bm-bis.js"
+    "scrape:bm": "node scripts/scrape-bm-bis.js",
+    "enrich:bm": "node scripts/enrich-bm-bis.js"
   },
   "engines": {
     "node": ">=20"
