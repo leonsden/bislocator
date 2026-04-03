@@ -1,4 +1,4 @@
-const DATA_PATH = "../data/bm-hunter-bis.json";
+const DATA_PATH = "/bislocator/data/bm-hunter-bis.json";
 
 const state = {
   rawData: null,
