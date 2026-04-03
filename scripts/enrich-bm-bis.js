@@ -72,19 +72,24 @@ function normalizeWhitespace(str) {
 }
 
 function cleanDropText(value) {
-  if (!value) return null;
+  if (value == null) return null;
 
-  let text = stripTags(String(value));
+  let text = String(value);
+  text = stripTags(text);
   text = normalizeWhitespace(text);
 
+  // Remove trailing wowhead item URLs accidentally captured
   text = text.replace(/\s*>\s*https?:\/\/www\.wowhead\.com\/item=.*$/i, "");
   text = text.replace(/\s*https?:\/\/\S+$/i, "");
 
-  text = text.replace(/\s*\]\]\s*$/g, "");
-  text = text.replace(/\s*\]\s*$/g, "");
+  // Remove CDATA/markup leftovers
+  text = text.replace(/\]\]+$/g, "");
+  text = text.replace(/\]+$/g, "");
 
+  // Remove drop chance suffixes
   text = text.replace(/\s*Drop Chance:\s*[\d.]+%\s*$/i, "");
 
+  // Remove generic trailing separators
   text = text.replace(/\s*>\s*$/g, "");
   text = text.replace(/\s*[:|-]\s*$/g, "");
 
@@ -112,6 +117,41 @@ function inferSourceType(source) {
   }
 
   return null;
+}
+
+function isLikelyInstanceName(name) {
+  if (!name) return false;
+  return /caverns|academy|skyreach|triumvirate|xenas|falls|leatherworking|tier/i.test(name);
+}
+
+function normalizeEntry(entry, item = null) {
+  if (!entry) return entry;
+
+  entry.method = entry.method || null;
+  entry.sourceType =
+    entry.sourceType ||
+    (item ? item.sourceType || inferSourceType(item.source) : null);
+  entry.instance = cleanDropText(entry.instance) || (item ? item.source || null : null);
+  entry.boss = cleanDropText(entry.boss);
+  entry.dropSource = cleanDropText(entry.dropSource);
+  entry.dropSourceUrl = entry.dropSourceUrl || (item ? item.sourceUrl || null : null);
+  entry.itemUrl =
+    entry.itemUrl || (item ? `https://www.wowhead.com/item=${item.itemId}` : null);
+
+  // Fallback: for boss-guide style entries like "Belo'ren"
+  if (!entry.boss && item) {
+    const fallbackSource = cleanDropText(item.source);
+    if (
+      fallbackSource &&
+      !isLikelyInstanceName(fallbackSource) &&
+      (item.sourceType === "raid" || item.sourceType === "dungeon")
+    ) {
+      entry.boss = fallbackSource;
+      entry.dropSource = fallbackSource;
+    }
+  }
+
+  return entry;
 }
 
 function isCacheComplete(entry, item) {
@@ -182,7 +222,7 @@ function extractFromXml(xml, item) {
   };
 
   if (result.sourceType === "tier" || result.sourceType === "crafted") {
-    return result;
+    return normalizeEntry(result, item);
   }
 
   const lines = xml
@@ -219,23 +259,7 @@ function extractFromXml(xml, item) {
     }
   }
 
-  // Fallback: if raid/dungeon item source itself is already a boss page label
-  if (!result.boss && (result.sourceType === "raid" || result.sourceType === "dungeon")) {
-    const fallbackSource = cleanDropText(item.source);
-    if (
-      fallbackSource &&
-      !/caverns|academy|skyreach|triumvirate|xenas|falls|leatherworking|tier/i.test(fallbackSource)
-    ) {
-      result.boss = fallbackSource;
-      result.dropSource = fallbackSource;
-    }
-  }
-
-  result.boss = cleanDropText(result.boss);
-  result.dropSource = cleanDropText(result.dropSource);
-  result.instance = cleanDropText(result.instance);
-
-  return result;
+  return normalizeEntry(result, item);
 }
 
 async function enrichItem(item) {
@@ -246,16 +270,19 @@ async function enrichItem(item) {
     const xml = await fetchText(xmlUrl);
     return extractFromXml(xml, item);
   } catch (err) {
-    return {
-      method: "fallback",
-      sourceType: item.sourceType || inferSourceType(item.source),
-      instance: item.source || null,
-      boss: null,
-      dropSource: null,
-      dropSourceUrl: item.sourceUrl || null,
-      itemUrl,
-      error: err.message,
-    };
+    return normalizeEntry(
+      {
+        method: "fallback",
+        sourceType: item.sourceType || inferSourceType(item.source),
+        instance: item.source || null,
+        boss: null,
+        dropSource: null,
+        dropSourceUrl: item.sourceUrl || null,
+        itemUrl,
+        error: err.message,
+      },
+      item
+    );
   }
 }
 
@@ -273,23 +300,25 @@ async function main() {
   for (const item of bis.items) {
     const cacheKey = String(item.itemId);
 
+    if (cache[cacheKey]) {
+      cache[cacheKey] = normalizeEntry(cache[cacheKey], item);
+    }
+
     let enriched = cache[cacheKey];
     if (!isCacheComplete(enriched, item)) {
       enriched = await enrichItem(item);
-      cache[cacheKey] = enriched;
+      cache[cacheKey] = normalizeEntry(enriched, item);
       await sleep(500);
+    } else {
+      enriched = normalizeEntry(enriched, item);
+      cache[cacheKey] = enriched;
     }
 
-    item.boss = cleanDropText(enriched.boss) ?? null;
-    item.dropSource = cleanDropText(enriched.dropSource) ?? null;
+    item.boss = enriched.boss ?? null;
+    item.dropSource = enriched.dropSource ?? null;
     item.itemUrl = enriched.itemUrl ?? `https://www.wowhead.com/item=${item.itemId}`;
     item.dropSourceUrl = enriched.dropSourceUrl ?? item.sourceUrl ?? null;
     item.enrichmentMethod = enriched.method ?? null;
-
-    // Keep cache normalized too
-    cache[cacheKey].boss = item.boss;
-    cache[cacheKey].dropSource = item.dropSource;
-    cache[cacheKey].instance = cleanDropText(cache[cacheKey].instance) ?? item.source ?? null;
 
     if (item.sourceType !== "tier" && item.sourceType !== "crafted" && !item.boss) {
       debug.push({
