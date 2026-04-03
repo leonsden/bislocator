@@ -1,0 +1,36 @@
+name: Update BM Hunter BiS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run scraper
+        run: node scripts/scrape-bm-bis.js
+
+      - name: Enrich boss and drop source data
+        run: node scripts/enrich-bm-bis.js
+
+      - name: Commit updated JSON if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/bm-hunter-bis.json data/item-source-cache.json
+          git diff --cached --quiet || git commit -m "Update BM Hunter BiS data"
+          git push
