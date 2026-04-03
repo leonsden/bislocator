@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BiS Locator - Beast Mastery Hunter</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>BiS Locator</h1>
+      <p class="subtitle">Beast Mastery Hunter · Midnight Season 1</p>
+    </div>
+    <div class="header-actions">
+      <button id="refresh-data-btn" class="secondary-btn" type="button">Reload Data</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card controls-card">
+      <div class="controls-top">
+        <div>
+          <h2>Filters</h2>
+          <p class="muted">Start with the cached Wowhead BiS data.</p>
+        </div>
+      </div>
+
+      <div class="controls-grid">
+        <label>
+          <span>Search</span>
+          <input id="search-input" type="text" placeholder="Item, boss, source..." />
+        </label>
+
+        <label>
+          <span>Source Type</span>
+          <select id="source-type-filter">
+            <option value="all">All</option>
+            <option value="dungeon">Dungeon</option>
+            <option value="raid">Raid</option>
+            <option value="tier">Tier</option>
+            <option value="crafted">Crafted</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Sort Items By</span>
+          <select id="sort-filter">
+            <option value="slot">Slot</option>
+            <option value="source">Source</option>
+            <option value="boss">Boss</option>
+            <option value="name">Item Name</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="stats-grid" id="summary-stats"></div>
+    </section>
+
+    <section class="card priority-card">
+      <div class="section-header">
+        <div>
+          <h2>Best Content to Run</h2>
+          <p class="muted">Grouped by instance or source. This is the first scoring version.</p>
+        </div>
+      </div>
+      <div id="priority-list" class="priority-list"></div>
+    </section>
+
+    <section class="card items-card">
+      <div class="section-header">
+        <div>
+          <h2>All BiS Items</h2>
+          <p class="muted">Directly from your generated JSON.</p>
+        </div>
+        <div id="item-count" class="pill"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>Item</th>
+              <th>Source Type</th>
+              <th>Source</th>
+              <th>Boss</th>
+              <th>Links</th>
+            </tr>
+          </thead>
+          <tbody id="items-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <template id="priority-card-template">
+    <article class="priority-entry">
+      <div class="priority-entry-top">
+        <div>
+          <h3 class="priority-title"></h3>
+          <p class="priority-meta"></p>
+        </div>
+        <div class="priority-score"></div>
+      </div>
+      <ul class="priority-items"></ul>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
