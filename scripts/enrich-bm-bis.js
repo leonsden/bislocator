@@ -37,7 +37,7 @@ async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
       "User-Agent": USER_AGENT,
-      "Accept": "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
+      Accept: "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
     },
   });
 
@@ -78,10 +78,15 @@ function cleanDropText(value) {
   text = normalizeWhitespace(text);
 
   text = text.replace(/\s*>\s*https?:\/\/www\.wowhead\.com\/item=.*$/i, "");
-
   text = text.replace(/\s*https?:\/\/\S+$/i, "");
 
+  text = text.replace(/\s*\]\]\s*$/g, "");
+  text = text.replace(/\s*\]\s*$/g, "");
+
+  text = text.replace(/\s*Drop Chance:\s*[\d.]+%\s*$/i, "");
+
   text = text.replace(/\s*>\s*$/g, "");
+  text = text.replace(/\s*[:|-]\s*$/g, "");
 
   text = normalizeWhitespace(text);
 
@@ -92,6 +97,7 @@ function inferSourceType(source) {
   const s = (source || "").toLowerCase();
 
   if (s.includes("tier")) return "tier";
+
   if (
     s.includes("leatherworking") ||
     s.includes("blacksmithing") ||
@@ -104,12 +110,12 @@ function inferSourceType(source) {
   ) {
     return "crafted";
   }
+
   return null;
 }
 
 function isCacheComplete(entry, item) {
   if (!entry) return false;
-
   if (!entry.itemUrl) return false;
 
   const sourceType = item.sourceType || inferSourceType(item.source) || entry.sourceType;
@@ -198,7 +204,6 @@ function extractFromXml(xml, item) {
     }
   }
 
-  // fallback: try to grab text from CDATA or htmlDescription blocks
   const cdataMatches = [...xml.matchAll(/<!\[CDATA\[(.*?)\]\]>/gis)].map((m) => m[1]);
   for (const block of cdataMatches) {
     const boss = extractBossFromText(block);
@@ -211,6 +216,18 @@ function extractFromXml(xml, item) {
 
     if (instance && (!result.instance || result.instance === item.source)) {
       result.instance = instance;
+    }
+  }
+
+  // Fallback: if raid/dungeon item source itself is already a boss page label
+  if (!result.boss && (result.sourceType === "raid" || result.sourceType === "dungeon")) {
+    const fallbackSource = cleanDropText(item.source);
+    if (
+      fallbackSource &&
+      !/caverns|academy|skyreach|triumvirate|xenas|falls|leatherworking|tier/i.test(fallbackSource)
+    ) {
+      result.boss = fallbackSource;
+      result.dropSource = fallbackSource;
     }
   }
 
@@ -263,17 +280,18 @@ async function main() {
       await sleep(500);
     }
 
-    item.boss = enriched.boss ?? null;
-    item.dropSource = enriched.dropSource ?? null;
+    item.boss = cleanDropText(enriched.boss) ?? null;
+    item.dropSource = cleanDropText(enriched.dropSource) ?? null;
     item.itemUrl = enriched.itemUrl ?? `https://www.wowhead.com/item=${item.itemId}`;
     item.dropSourceUrl = enriched.dropSourceUrl ?? item.sourceUrl ?? null;
     item.enrichmentMethod = enriched.method ?? null;
 
-    if (
-      item.sourceType !== "tier" &&
-      item.sourceType !== "crafted" &&
-      !item.boss
-    ) {
+    // Keep cache normalized too
+    cache[cacheKey].boss = item.boss;
+    cache[cacheKey].dropSource = item.dropSource;
+    cache[cacheKey].instance = cleanDropText(cache[cacheKey].instance) ?? item.source ?? null;
+
+    if (item.sourceType !== "tier" && item.sourceType !== "crafted" && !item.boss) {
       debug.push({
         itemId: item.itemId,
         name: item.name,
