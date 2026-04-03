@@ -1,0 +1,147 @@
+{
+  "spec": "beast-mastery-hunter",
+  "source": {
+    "site": "Wowhead",
+    "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
+    "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
+    "updatedAt": "2026-03-22T17:16:29-05:00",
+    "scrapedAt": "2026-04-03T01:39:59.930Z"
+  },
+  "items": [
+    {
+      "slot": "Weapon",
+      "itemId": 251174,
+      "name": "Deceiver's Rotbow",
+      "source": "Maisara Caverns",
+      "sourceType": "dungeon",
+      "sourceGuideId": 33181,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Head",
+      "itemId": 249988,
+      "name": "Primal Sentry's Maw",
+      "source": "Tier Set",
+      "sourceType": "tier",
+      "sourceGuideId": 31892,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Neck",
+      "itemId": 250247,
+      "name": "Amulet of the Abyssal Hymn",
+      "source": "Midnight Falls",
+      "sourceType": "raid",
+      "sourceGuideId": 33234,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Shoulders",
+      "itemId": 151323,
+      "name": "Pauldrons of the Void Hunter",
+      "source": "Seat of the Triumvirate",
+      "sourceType": "dungeon",
+      "sourceGuideId": 33200,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Cloak",
+      "itemId": 258575,
+      "name": "Rigid Scale Greatcloak",
+      "source": "Skyreach",
+      "sourceType": "dungeon",
+      "sourceGuideId": 33199,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Chest",
+      "itemId": 249991,
+      "name": "Primal Sentry's Scaleplate",
+      "source": "Tier Set",
+      "sourceType": "tier",
+      "sourceGuideId": 31892,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Wrist",
+      "itemId": 251209,
+      "name": "Corewarden Cuffs",
+      "source": "Nexus Point Xenas",
+      "sourceType": "dungeon",
+      "sourceGuideId": 33182,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Gloves",
+      "itemId": 249989,
+      "name": "Primal Sentry's Talonguards",
+      "source": "Tier Set",
+      "sourceType": "tier",
+      "sourceGuideId": 31892,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Belt",
+      "itemId": 244611,
+      "name": "World Tender's Barkclasp",
+      "source": "Leatherworking",
+      "sourceType": "crafted",
+      "sourceGuideId": null,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Legs",
+      "itemId": 249987,
+      "name": "Primal Sentry's Legguards",
+      "source": "Tier Set",
+      "sourceType": "tier",
+      "sourceGuideId": 31892,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Boots",
+      "itemId": 244610,
+      "name": "World Tender's Rootslippers",
+      "source": "Leatherworking",
+      "sourceType": "crafted",
+      "sourceGuideId": null,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Ring",
+      "itemId": 249920,
+      "name": "Eye of Midnight",
+      "source": "Midnight Falls",
+      "sourceType": "raid",
+      "sourceGuideId": 33234,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Ring",
+      "itemId": 249369,
+      "name": "Bond of Light",
+      "source": "Lightblinded Vanguard",
+      "sourceType": "raid",
+      "sourceGuideId": 33227,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Trinket",
+      "itemId": 249806,
+      "name": "Radiant Plume",
+      "source": "Belo'ren",
+      "sourceType": "raid",
+      "sourceGuideId": 33233,
+      "sourceUrl": null
+    },
+    {
+      "slot": "Trinket",
+      "itemId": 193701,
+      "name": "Algeth'ar Puzzle Box",
+      "source": "Algeth'ar Academy",
+      "sourceType": "dungeon",
+      "sourceGuideId": 33197,
+      "sourceUrl": null
+    }
+  ]
+}
