@@ -5,7 +5,8 @@
     "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
     "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
     "updatedAt": "2026-03-22T17:16:29-05:00",
-    "scrapedAt": "2026-04-03T01:39:59.930Z"
+    "scrapedAt": "2026-04-03T01:51:44.825Z",
+    "enrichedAt": "2026-04-03T01:51:54.341Z"
   },
   "items": [
     {
@@ -24,7 +25,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249988",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Neck",
@@ -60,7 +66,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249991",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Wrist",
@@ -78,7 +89,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249989",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Belt",
@@ -87,7 +103,12 @@
       "source": "Leatherworking",
       "sourceType": "crafted",
       "sourceGuideId": null,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=244611",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Legs",
@@ -96,7 +117,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249987",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Boots",
@@ -105,7 +131,12 @@
       "source": "Leatherworking",
       "sourceType": "crafted",
       "sourceGuideId": null,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=244610",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Ring",
@@ -132,7 +163,12 @@
       "source": "Belo'ren",
       "sourceType": "raid",
       "sourceGuideId": 33233,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": "Belo'ren",
+      "dropSource": "Belo'ren",
+      "itemUrl": "https://www.wowhead.com/item=249806",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "xml"
     },
     {
       "slot": "Trinket",
