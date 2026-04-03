@@ -3,25 +3,6 @@ name: Update BM Hunter BiS
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 9 * * *'
-
-permissions:
-  contents: write
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        name: Update BM Hunter BiS
-
-on:
-  workflow_dispatch:
-  schedule:
     - cron: "17 6 * * *"
 
 jobs:
@@ -32,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
