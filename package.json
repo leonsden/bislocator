@@ -8,6 +8,6 @@
     "enrich:bm": "node scripts/enrich-bm-bis.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   }
 }

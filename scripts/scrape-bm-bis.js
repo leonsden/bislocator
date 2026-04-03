@@ -13,7 +13,8 @@ async function main() {
 
   const guideMarkup = extractGuideBodyMarkup(html);
   const itemMap = extractItemMap(html);
-  const items = extractBisItems(guideMarkup, itemMap);
+  const guideMap = extractGuideMap(html);
+  const items = extractBisItems(guideMarkup, itemMap, guideMap);
 
   if (items.length === 0) {
     throw new Error('No BiS rows were parsed from the Wowhead guide source.');
@@ -85,22 +86,9 @@ function extractGuideBodyMarkup(html) {
 }
 
 function extractItemMap(html) {
-  const marker = 'WH.Gatherer.addData(3, 1,';
-  const start = html.indexOf(marker);
-  if (start === -1) {
-    throw new Error('Could not find embedded item data in the page source.');
-  }
-
-  const jsonStart = html.indexOf('{', start);
-  if (jsonStart === -1) {
-    throw new Error('Could not find the item data JSON object.');
-  }
-
-  const jsonEnd = findMatchingBrace(html, jsonStart);
-  const jsonText = html.slice(jsonStart, jsonEnd + 1);
-  const rawMap = JSON.parse(jsonText);
-
+  const rawMap = extractGathererJson(html, 'WH.Gatherer.addData(3, 1,');
   const itemMap = new Map();
+
   for (const [id, item] of Object.entries(rawMap)) {
     itemMap.set(Number(id), {
       id: Number(id),
@@ -113,7 +101,39 @@ function extractItemMap(html) {
   return itemMap;
 }
 
-function extractBisItems(markup, itemMap) {
+function extractGuideMap(html) {
+  const rawMap = extractGathererJson(html, 'WH.Gatherer.addData(100, 1,');
+  const guideMap = new Map();
+
+  for (const [id, guide] of Object.entries(rawMap)) {
+    guideMap.set(Number(id), {
+      id: Number(id),
+      name: guide.name ?? null,
+      url: guide.url ?? null,
+      category: guide.category ?? null
+    });
+  }
+
+  return guideMap;
+}
+
+function extractGathererJson(html, marker) {
+  const start = html.indexOf(marker);
+  if (start === -1) {
+    return {};
+  }
+
+  const jsonStart = html.indexOf('{', start);
+  if (jsonStart === -1) {
+    return {};
+  }
+
+  const jsonEnd = findMatchingBrace(html, jsonStart);
+  const jsonText = html.slice(jsonStart, jsonEnd + 1);
+  return JSON.parse(jsonText);
+}
+
+function extractBisItems(markup, itemMap, guideMap) {
   const titleIndex = markup.indexOf('Best in Slot Gear for Beast Mastery Hunter');
   if (titleIndex === -1) {
     throw new Error('Could not find the Beast Mastery Hunter BiS section title in the guide markup.');
@@ -141,7 +161,7 @@ function extractBisItems(markup, itemMap) {
     }
 
     const itemRef = parseItemCell(cells[1], itemMap);
-    const source = parseSourceCell(cells[2]);
+    const source = parseSourceCell(cells[2], guideMap);
 
     items.push({
       slot: slotText,
@@ -174,7 +194,7 @@ function parseItemCell(cell, itemMap) {
   };
 }
 
-function parseSourceCell(cell) {
+function parseSourceCell(cell, guideMap) {
   const skillUrlMatch = cell.match(/\[url=(?:\/)?skill=(\d+)\/([^\]]+)\]([\s\S]*?)\[\/url\]/i);
   if (skillUrlMatch) {
     const skillSlug = skillUrlMatch[2];
@@ -198,11 +218,13 @@ function parseSourceCell(cell) {
 
   const guideMatch = cell.match(/\[url guide=(\d+)\]([\s\S]*?)\[\/url\]/i);
   if (guideMatch) {
+    const guideId = Number(guideMatch[1]);
+    const guideEntry = guideMap.get(guideId);
     return {
       name: stripMarkup(guideMatch[2]),
       type: classifySource(stripMarkup(guideMatch[2])),
-      guideId: Number(guideMatch[1]),
-      url: null
+      guideId,
+      url: guideEntry?.url ? absolutizeWowheadUrl(guideEntry.url) : null
     };
   }
 
@@ -243,6 +265,13 @@ function skillNameFromId(skillId) {
   return map[skillId] ?? `Profession ${skillId}`;
 }
 
+function absolutizeWowheadUrl(url) {
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith('/')) return `https://www.wowhead.com${url}`;
+  return `https://www.wowhead.com/${url}`;
+}
+
 function stripMarkup(input) {
   return input
     .replace(/\[icon[^\]]*\]/gi, '')
@@ -258,64 +287,68 @@ function stripMarkup(input) {
     .trim();
 }
 
-function parseJsStringLiteral(text, quoteIndex) {
-  const quote = text[quoteIndex];
-  if (quote !== '"' && quote !== "'") {
-    throw new Error('Expected a JavaScript string literal.');
-  }
+function matchOne(text, regex) {
+  const match = text.match(regex);
+  return match ? match[1] : null;
+}
 
-  let i = quoteIndex + 1;
-  let raw = quote;
+function findFirstQuote(text, startIndex, endIndex) {
+  for (let i = startIndex; i < endIndex; i += 1) {
+    const char = text[i];
+    if (char === '"' || char === "'") return i;
+  }
+  return -1;
+}
+
+function parseJsStringLiteral(text, startIndex) {
+  const quote = text[startIndex];
+  let i = startIndex + 1;
+  let value = '';
 
   while (i < text.length) {
     const char = text[i];
-    raw += char;
-
     if (char === '\\') {
-      i += 1;
-      if (i >= text.length) {
-        break;
-      }
-      raw += text[i];
-    } else if (char === quote) {
-      return {
-        value: JSON.parse(raw),
-        endIndex: i
-      };
+      const next = text[i + 1];
+      if (next === 'n') value += '\n';
+      else if (next === 'r') value += '\r';
+      else if (next === 't') value += '\t';
+      else if (next === quote || next === '\\' || next === '/') value += next;
+      else value += next;
+      i += 2;
+      continue;
     }
 
+    if (char === quote) {
+      return { value, endIndex: i };
+    }
+
+    value += char;
     i += 1;
   }
 
   throw new Error('Unterminated JavaScript string literal.');
 }
 
-function findFirstQuote(text, start, end) {
-  for (let i = start; i < end; i += 1) {
-    const char = text[i];
-    if (char === '"' || char === "'") {
-      return i;
-    }
-  }
-  return -1;
-}
-
-function findMatchingBrace(text, openBraceIndex) {
+function findMatchingBrace(text, startIndex) {
   let depth = 0;
   let inString = false;
   let stringQuote = '';
+  let escaped = false;
 
-  for (let i = openBraceIndex; i < text.length; i += 1) {
+  for (let i = startIndex; i < text.length; i += 1) {
     const char = text[i];
 
     if (inString) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
       if (char === '\\') {
-        i += 1;
+        escaped = true;
         continue;
       }
       if (char === stringQuote) {
         inString = false;
-        stringQuote = '';
       }
       continue;
     }
@@ -329,20 +362,14 @@ function findMatchingBrace(text, openBraceIndex) {
     if (char === '{') depth += 1;
     if (char === '}') {
       depth -= 1;
-      if (depth === 0) {
-        return i;
-      }
+      if (depth === 0) return i;
     }
   }
 
-  throw new Error('Could not find the closing brace for the item data object.');
-}
-
-function matchOne(text, regex) {
-  return text.match(regex)?.[1] ?? null;
+  throw new Error('Could not find matching closing brace.');
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  console.error(error);
   process.exitCode = 1;
 });
