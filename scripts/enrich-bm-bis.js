@@ -1,421 +1,304 @@
-#!/usr/bin/env node
+const fs = require("fs");
+const path = require("path");
 
-const fs = require('fs/promises');
-const path = require('path');
+const DATA_DIR = path.join(__dirname, "..", "data");
+const BIS_PATH = path.join(DATA_DIR, "bm-hunter-bis.json");
+const CACHE_PATH = path.join(DATA_DIR, "item-source-cache.json");
+const DEBUG_PATH = path.join(DATA_DIR, "item-source-debug.json");
 
-const DATA_DIR = path.resolve(process.cwd(), 'data');
-const BIS_PATH = path.join(DATA_DIR, 'bm-hunter-bis.json');
-const CACHE_PATH = path.join(DATA_DIR, 'item-source-cache.json');
-const DEBUG_PATH = path.join(DATA_DIR, 'item-source-debug.json');
-const BASE_HEADERS = {
-  'user-agent':
-    'Mozilla/5.0 (compatible; bislocator/0.3; +https://github.com/leonsden/bislocator)',
-  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,text/plain;q=0.8,*/*;q=0.7'
-};
+const USER_AGENT =
+  "Mozilla/5.0 (compatible; bislocator/1.0; +https://github.com/leonsden/bislocator)";
 
-const KNOWN_DUNGEONS = [
-  'maisara caverns',
-  'seat of the triumvirate',
-  'skyreach',
-  'nexus point xenas',
-  'nexus-point xenas',
-  "algeth'ar academy"
-];
-
-const KNOWN_NON_BOSS_SOURCES = new Set([
-  'midnight falls',
-  'lightblinded vanguard',
-  'the voidspire',
-  'march on quel’danas',
-  "march on quel'danas",
-  'march on quel-danas',
-  'tier set',
-  'leatherworking'
-]);
-
-async function main() {
-  const bis = JSON.parse(await fs.readFile(BIS_PATH, 'utf8'));
-  const cache = await loadJson(CACHE_PATH, {});
-  const debug = {
-    generatedAt: new Date().toISOString(),
-    attempted: [],
-    failures: []
-  };
-
-  for (const item of bis.items) {
-    if (!item.itemId) continue;
-
-    const cached = cache[item.itemId];
-    if (isCacheUsable(cached, item)) {
-      applyEnrichment(item, cached);
-      continue;
-    }
-
-    try {
-      const enrichment = await fetchItemSourceDetails(item);
-      cache[item.itemId] = enrichment;
-      applyEnrichment(item, enrichment);
-      debug.attempted.push({ itemId: item.itemId, name: item.name, method: enrichment.method });
-      console.log(`Enriched ${item.itemId} ${item.name} via ${enrichment.method}`);
-    } catch (error) {
-      const failure = {
-        itemId: item.itemId,
-        name: item.name,
-        source: item.source,
-        sourceType: item.sourceType,
-        error: error.message
-      };
-      debug.failures.push(failure);
-      console.warn(`Could not enrich ${item.itemId} ${item.name}: ${error.message}`);
-
-      const fallback = buildFallbackEnrichment(item, 'fallback');
-      cache[item.itemId] = fallback;
-      applyEnrichment(item, fallback);
-    }
-
-    await sleep(400);
+function ensureDataDir() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-
-  bis.source = {
-    ...bis.source,
-    enrichedAt: new Date().toISOString()
-  };
-
-  await fs.writeFile(BIS_PATH, JSON.stringify(bis, null, 2) + '\n', 'utf8');
-  await fs.writeFile(CACHE_PATH, JSON.stringify(cache, null, 2) + '\n', 'utf8');
-  await fs.writeFile(DEBUG_PATH, JSON.stringify(debug, null, 2) + '\n', 'utf8');
-  console.log(`Updated ${BIS_PATH}`);
 }
 
-async function fetchItemSourceDetails(item) {
-  const endpoints = [
-    {
-      method: 'wowhead-xml',
-      url: `https://www.wowhead.com/item=${item.itemId}&xml`
-    },
-    {
-      method: 'wowhead-tooltip',
-      url: `https://www.wowhead.com/tooltip/item/${item.itemId}`
-    },
-    {
-      method: 'wowhead-html',
-      url: `https://www.wowhead.com/item=${item.itemId}`
-    },
-    {
-      method: 'wowdb',
-      url: `https://wowdb.com/items/${item.itemId}`
-    },
-    {
-      method: 'wowdb-ptr',
-      url: `https://ptr.wowdb.com/items/${item.itemId}`
-    }
-  ];
-
-  for (const endpoint of endpoints) {
-    try {
-      const text = await fetchText(endpoint.url);
-      const parsed = parseSourceFromText(text, item, endpoint.method);
-      if (parsed && hasMeaningfulEnrichment(parsed, item)) {
-        return parsed;
-      }
-    } catch (error) {
-      // Try the next endpoint quietly.
-    }
-  }
-
-  throw new Error('No boss or improved drop source could be parsed from configured endpoints.');
-}
-
-function parseSourceFromText(text, item, method) {
-  const rawText = decodeHtml(stripTags(String(text || '')))
-    .replace(/\s+/g, ' ')
-    .replace(/\u00a0/g, ' ')
-    .trim();
-
-  const result = buildFallbackEnrichment(item, method);
-  const hint = item.source || null;
-
-  const combinedPatterns = [
-    /Dropped by\s+([^|.]+?)\s*-\s*([^|.]+?)(?:\.|\||$)/i,
-    /Dropped by\s+([^|.]+?)\s+in\s+([^|.]+?)(?:\.|\||$)/i,
-    /Dropped by:\s*([^|.]+?)\s*-\s*([^|.]+?)(?:\.|\||$)/i,
-    /Drops? from\s+([^|.]+?)\s*-\s*([^|.]+?)(?:\.|\||$)/i
-  ];
-
-  for (const pattern of combinedPatterns) {
-    const match = rawText.match(pattern);
-    if (match) {
-      const maybeBoss = tidy(match[1]);
-      const maybeInstance = tidy(match[2]);
-      if (looksLikeBossName(maybeBoss)) result.boss = maybeBoss;
-      if (maybeInstance) result.instance = maybeInstance;
-      result.dropSource = result.boss || maybeBoss || result.dropSource;
-      return finalizeEnrichment(result, item);
-    }
-  }
-
-  const bossPatterns = [
-    /Dropped by:\s*([^|]+?)(?:Chance:|Drop Chance|Sell Price|Requires Level|Quick Facts|Screenshots|Related|$)/i,
-    /Dropped by\s+([^|]+?)(?:Chance:|Drop Chance|Sell Price|Requires Level|Quick Facts|Screenshots|Related|$)/i,
-    /Drops? from\s+([^|]+?)(?:Chance:|Drop Chance|Sell Price|Requires Level|Quick Facts|Screenshots|Related|$)/i,
-    /Source:\s*([^|]+?)(?:Chance:|Drop Chance|Sell Price|Requires Level|Quick Facts|Screenshots|Related|$)/i
-  ];
-
-  for (const pattern of bossPatterns) {
-    const match = rawText.match(pattern);
-    if (!match) continue;
-
-    const dropText = tidy(match[1]);
-    if (!dropText) continue;
-
-    const split = splitDropText(dropText, hint);
-    if (split.boss && looksLikeBossName(split.boss)) result.boss = split.boss;
-    if (split.instance) result.instance = split.instance;
-    result.dropSource = split.dropSource || dropText;
-    return finalizeEnrichment(result, item);
-  }
-
-  const instancePatterns = [
-    /Zone:\s*([^|]+?)(?:Item Level|Requires Level|Sell Price|Quick Facts|Dropped by|Screenshots|Related|$)/i,
-    /Location:\s*([^|]+?)(?:Item Level|Requires Level|Sell Price|Quick Facts|Dropped by|Screenshots|Related|$)/i,
-    /Instance:\s*([^|]+?)(?:Item Level|Requires Level|Sell Price|Quick Facts|Dropped by|Screenshots|Related|$)/i
-  ];
-
-  for (const pattern of instancePatterns) {
-    const match = rawText.match(pattern);
-    if (match) {
-      const instance = tidy(match[1]);
-      if (instance) {
-        result.instance = instance;
-        break;
-      }
-    }
-  }
-
-  const exactHintIndex = hint ? rawText.toLowerCase().indexOf(hint.toLowerCase()) : -1;
-  if (!result.boss && exactHintIndex !== -1 && result.sourceType === 'dungeon') {
-    const windowStart = Math.max(0, exactHintIndex - 180);
-    const nearby = rawText.slice(windowStart, exactHintIndex + hint.length + 60);
-    const nearbyBoss = nearby.match(/([A-Z][A-Za-z'’:-]+(?:\s+[A-Z][A-Za-z'’:-]+){0,4})\s*-\s*/);
-    if (nearbyBoss && looksLikeBossName(nearbyBoss[1])) {
-      result.boss = tidy(nearbyBoss[1]);
-      result.dropSource = result.boss;
-    }
-  }
-
-  return finalizeEnrichment(result, item);
-}
-
-function finalizeEnrichment(result, item) {
-  result.instance = normalizeInstanceName(result.instance || item.source);
-
-  if (!result.boss && isLikelyBoss(item.source)) {
-    result.boss = item.source;
-  }
-
-  if (!result.dropSource && result.boss) {
-    result.dropSource = result.boss;
-  }
-
-  result.itemUrl = `https://www.wowhead.com/item=${item.itemId}`;
-  result.sourceType = classifySource(result.instance || item.source);
-
-  if (!hasMeaningfulEnrichment(result, item)) {
-    return null;
-  }
-
-  return result;
-}
-
-function buildFallbackEnrichment(item, method) {
-  return {
-    method,
-    sourceType: classifySource(item.source),
-    instance: item.source || null,
-    boss: isLikelyBoss(item.source) ? item.source : null,
-    dropSource: isLikelyBoss(item.source) ? item.source : null,
-    dropSourceUrl: item.sourceUrl || null,
-    itemUrl: `https://www.wowhead.com/item=${item.itemId}`
-  };
-}
-
-function hasMeaningfulEnrichment(result, item) {
-  if (!result) return false;
-
-  if (result.boss) return true;
-
-  const normalizedItemSource = normalizeForCompare(item.source);
-  const normalizedInstance = normalizeForCompare(result.instance);
-  if (normalizedInstance && normalizedItemSource && normalizedInstance !== normalizedItemSource) {
-    return true;
-  }
-
-  if (result.dropSource && normalizeForCompare(result.dropSource) !== normalizedItemSource) {
-    return true;
-  }
-
-  return result.sourceType === 'tier' || result.sourceType === 'crafted';
-}
-
-function isCacheUsable(cached, item) {
-  if (!cached) return false;
-  if (cached.boss) return true;
-  if (cached.sourceType === 'tier' || cached.sourceType === 'crafted') return true;
-
-  const normalizedInstance = normalizeForCompare(cached.instance);
-  const normalizedSource = normalizeForCompare(item.source);
-  if (normalizedInstance && normalizedSource && normalizedInstance !== normalizedSource) {
-    return true;
-  }
-
-  return false;
-}
-
-function splitDropText(dropText, instanceHint) {
-  const cleaned = tidy(dropText);
-  const out = {
-    boss: null,
-    instance: null,
-    dropSource: cleaned || null
-  };
-
-  if (!cleaned) return out;
-
-  const dashParts = cleaned.split(/\s+-\s+/);
-  if (dashParts.length >= 2) {
-    const first = tidy(dashParts[0]);
-    const second = tidy(dashParts.slice(1).join(' - '));
-
-    if (looksLikeBossName(first)) out.boss = first;
-    if (second) out.instance = second;
-    return out;
-  }
-
-  if (instanceHint) {
-    const hintIndex = cleaned.toLowerCase().indexOf(instanceHint.toLowerCase());
-    if (hintIndex > 0) {
-      const bossPart = tidy(cleaned.slice(0, hintIndex));
-      if (looksLikeBossName(bossPart)) out.boss = bossPart.replace(/[,:-]\s*$/, '');
-      out.instance = instanceHint;
-      return out;
-    }
-  }
-
-  if (looksLikeBossName(cleaned)) {
-    out.boss = cleaned;
-  }
-
-  return out;
-}
-
-async function fetchText(url) {
-  const response = await fetch(url, { headers: BASE_HEADERS, redirect: 'follow' });
-  if (!response.ok) {
-    throw new Error(`Fetch failed for ${url}: ${response.status} ${response.statusText}`);
-  }
-  return response.text();
-}
-
-async function loadJson(filePath, fallback) {
+function readJson(filePath, fallback) {
   try {
-    return JSON.parse(await fs.readFile(filePath, 'utf8'));
-  } catch {
+    if (!fs.existsSync(filePath)) return fallback;
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (err) {
+    console.warn(`Failed to read JSON from ${filePath}:`, err.message);
     return fallback;
   }
 }
 
-function applyEnrichment(item, enrichment) {
-  item.source = enrichment.instance || item.source;
-  item.sourceType = enrichment.sourceType || item.sourceType;
-  item.boss = enrichment.boss || null;
-  item.dropSource = enrichment.dropSource || null;
-  item.itemUrl = enrichment.itemUrl || `https://www.wowhead.com/item=${item.itemId}`;
-  item.dropSourceUrl = enrichment.dropSourceUrl || null;
-  item.enrichmentMethod = enrichment.method || null;
-}
-
-function classifySource(sourceName) {
-  const normalized = normalizeForCompare(sourceName);
-  if (!normalized) return 'unknown';
-  if (normalized.includes('tier')) return 'tier';
-  if (
-    normalized.includes('leatherworking') ||
-    normalized.includes('blacksmithing') ||
-    normalized.includes('tailoring') ||
-    normalized.includes('jewelcrafting') ||
-    normalized.includes('inscription') ||
-    normalized.includes('alchemy') ||
-    normalized.includes('engineering')
-  ) {
-    return 'crafted';
-  }
-  if (KNOWN_DUNGEONS.includes(normalized)) return 'dungeon';
-  return 'raid';
-}
-
-function isLikelyBoss(name) {
-  const normalized = normalizeForCompare(name);
-  if (!normalized) return false;
-  if (KNOWN_NON_BOSS_SOURCES.has(normalized)) return false;
-  if (KNOWN_DUNGEONS.includes(normalized)) return false;
-  return true;
-}
-
-function looksLikeBossName(name) {
-  const value = tidy(name);
-  if (!isLikelyBoss(value)) return false;
-  if (/^(raid|dungeon|instance|zone|location)$/i.test(value)) return false;
-  return /[A-Za-z]/.test(value);
-}
-
-function normalizeInstanceName(name) {
-  const value = tidy(name);
-  if (!value) return value;
-  if (/^nexus[- ]point xenas$/i.test(value)) return 'Nexus Point Xenas';
-  return value;
-}
-
-function normalizeForCompare(value) {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/[’']/g, "'")
-    .replace(/[-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function tidy(value) {
-  return String(value || '')
-    .replace(/\s+/g, ' ')
-    .replace(/^[-:–—\s]+/, '')
-    .replace(/[|]+$/, '')
-    .replace(/[\]\[{}]+/g, ' ')
-    .trim();
-}
-
-function stripTags(value) {
-  return String(value || '')
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ');
-}
-
-function decodeHtml(value) {
-  return String(value || '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>');
+function writeJson(filePath, value) {
+  fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + "\n", "utf8");
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+async function fetchText(url) {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": USER_AGENT,
+      "Accept": "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} for ${url}`);
+  }
+
+  return await res.text();
+}
+
+function decodeHtml(str) {
+  if (!str) return str;
+  return str
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, "/");
+}
+
+function stripTags(str) {
+  if (!str) return str;
+  return decodeHtml(str.replace(/<[^>]*>/g, " "));
+}
+
+function normalizeWhitespace(str) {
+  if (!str) return str;
+  return str.replace(/\s+/g, " ").trim();
+}
+
+function cleanDropText(value) {
+  if (!value) return null;
+
+  let text = stripTags(String(value));
+  text = normalizeWhitespace(text);
+
+  text = text.replace(/\s*>\s*https?:\/\/www\.wowhead\.com\/item=.*$/i, "");
+
+  text = text.replace(/\s*https?:\/\/\S+$/i, "");
+
+  text = text.replace(/\s*>\s*$/g, "");
+
+  text = normalizeWhitespace(text);
+
+  return text || null;
+}
+
+function inferSourceType(source) {
+  const s = (source || "").toLowerCase();
+
+  if (s.includes("tier")) return "tier";
+  if (
+    s.includes("leatherworking") ||
+    s.includes("blacksmithing") ||
+    s.includes("tailoring") ||
+    s.includes("jewelcrafting") ||
+    s.includes("engineering") ||
+    s.includes("inscription") ||
+    s.includes("alchemy") ||
+    s.includes("craft")
+  ) {
+    return "crafted";
+  }
+  return null;
+}
+
+function isCacheComplete(entry, item) {
+  if (!entry) return false;
+
+  if (!entry.itemUrl) return false;
+
+  const sourceType = item.sourceType || inferSourceType(item.source) || entry.sourceType;
+
+  if (sourceType === "tier" || sourceType === "crafted") {
+    return true;
+  }
+
+  return Boolean(entry.boss || entry.dropSource || entry.instance);
+}
+
+function tryMatch(text, regexes) {
+  for (const regex of regexes) {
+    const match = text.match(regex);
+    if (match) return match;
+  }
+  return null;
+}
+
+function extractBossFromText(text) {
+  const cleaned = normalizeWhitespace(stripTags(text));
+  if (!cleaned) return null;
+
+  const patterns = [
+    /Dropped by:\s*([^|]+?)(?:\s+in\s+[^|]+)?$/i,
+    /Drop:\s*([^|]+?)(?:\s+in\s+[^|]+)?$/i,
+    /Source:\s*([^|]+?)(?:\s+in\s+[^|]+)?$/i,
+    /Boss:\s*([^|]+)$/i,
+  ];
+
+  const match = tryMatch(cleaned, patterns);
+  if (!match) return null;
+
+  return cleanDropText(match[1]);
+}
+
+function extractInstanceFromText(text) {
+  const cleaned = normalizeWhitespace(stripTags(text));
+  if (!cleaned) return null;
+
+  const patterns = [
+    /(?:Dropped by|Drop|Source):\s*[^|]+?\s+in\s+([^|]+)$/i,
+    /Zone:\s*([^|]+)$/i,
+    /Dungeon:\s*([^|]+)$/i,
+    /Raid:\s*([^|]+)$/i,
+    /Instance:\s*([^|]+)$/i,
+  ];
+
+  const match = tryMatch(cleaned, patterns);
+  if (!match) return null;
+
+  return cleanDropText(match[1]);
+}
+
+function extractFromXml(xml, item) {
+  const result = {
+    method: "wowhead-xml",
+    sourceType: item.sourceType || inferSourceType(item.source),
+    instance: item.source || null,
+    boss: null,
+    dropSource: null,
+    dropSourceUrl: item.sourceUrl || null,
+    itemUrl: `https://www.wowhead.com/item=${item.itemId}`,
+  };
+
+  if (result.sourceType === "tier" || result.sourceType === "crafted") {
+    return result;
+  }
+
+  const lines = xml
+    .split("\n")
+    .map((line) => normalizeWhitespace(line))
+    .filter(Boolean);
+
+  for (const line of lines) {
+    const boss = extractBossFromText(line);
+    const instance = extractInstanceFromText(line);
+
+    if (boss && !result.boss) {
+      result.boss = boss;
+      result.dropSource = boss;
+    }
+
+    if (instance && (!result.instance || result.instance === item.source)) {
+      result.instance = instance;
+    }
+  }
+
+  // fallback: try to grab text from CDATA or htmlDescription blocks
+  const cdataMatches = [...xml.matchAll(/<!\[CDATA\[(.*?)\]\]>/gis)].map((m) => m[1]);
+  for (const block of cdataMatches) {
+    const boss = extractBossFromText(block);
+    const instance = extractInstanceFromText(block);
+
+    if (boss && !result.boss) {
+      result.boss = boss;
+      result.dropSource = boss;
+    }
+
+    if (instance && (!result.instance || result.instance === item.source)) {
+      result.instance = instance;
+    }
+  }
+
+  result.boss = cleanDropText(result.boss);
+  result.dropSource = cleanDropText(result.dropSource);
+  result.instance = cleanDropText(result.instance);
+
+  return result;
+}
+
+async function enrichItem(item) {
+  const itemUrl = `https://www.wowhead.com/item=${item.itemId}`;
+  const xmlUrl = `${itemUrl}&xml`;
+
+  try {
+    const xml = await fetchText(xmlUrl);
+    return extractFromXml(xml, item);
+  } catch (err) {
+    return {
+      method: "fallback",
+      sourceType: item.sourceType || inferSourceType(item.source),
+      instance: item.source || null,
+      boss: null,
+      dropSource: null,
+      dropSourceUrl: item.sourceUrl || null,
+      itemUrl,
+      error: err.message,
+    };
+  }
+}
+
+async function main() {
+  ensureDataDir();
+
+  const bis = readJson(BIS_PATH, null);
+  if (!bis || !Array.isArray(bis.items)) {
+    throw new Error("Could not read data/bm-hunter-bis.json or items array is missing.");
+  }
+
+  const cache = readJson(CACHE_PATH, {});
+  const debug = [];
+
+  for (const item of bis.items) {
+    const cacheKey = String(item.itemId);
+
+    let enriched = cache[cacheKey];
+    if (!isCacheComplete(enriched, item)) {
+      enriched = await enrichItem(item);
+      cache[cacheKey] = enriched;
+      await sleep(500);
+    }
+
+    item.boss = enriched.boss ?? null;
+    item.dropSource = enriched.dropSource ?? null;
+    item.itemUrl = enriched.itemUrl ?? `https://www.wowhead.com/item=${item.itemId}`;
+    item.dropSourceUrl = enriched.dropSourceUrl ?? item.sourceUrl ?? null;
+    item.enrichmentMethod = enriched.method ?? null;
+
+    if (
+      item.sourceType !== "tier" &&
+      item.sourceType !== "crafted" &&
+      !item.boss
+    ) {
+      debug.push({
+        itemId: item.itemId,
+        name: item.name,
+        slot: item.slot,
+        source: item.source,
+        sourceType: item.sourceType,
+        sourceUrl: item.sourceUrl || null,
+        itemUrl: item.itemUrl,
+        enrichmentMethod: item.enrichmentMethod,
+      });
+    }
+  }
+
+  if (!bis.source) bis.source = {};
+  bis.source.enrichedAt = new Date().toISOString();
+
+  writeJson(BIS_PATH, bis);
+  writeJson(CACHE_PATH, cache);
+  writeJson(DEBUG_PATH, debug);
+
+  console.log(`Enriched ${bis.items.length} items.`);
+  console.log(`Debug entries written: ${debug.length}`);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
