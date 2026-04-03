@@ -5,7 +5,8 @@
     "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
     "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
     "updatedAt": "2026-03-22T17:16:29-05:00",
-    "scrapedAt": "2026-04-03T01:39:59.930Z"
+    "scrapedAt": "2026-04-03T02:02:23.651Z",
+    "enrichedAt": "2026-04-03T02:02:32.963Z"
   },
   "items": [
     {
@@ -15,7 +16,12 @@
       "source": "Maisara Caverns",
       "sourceType": "dungeon",
       "sourceGuideId": 33181,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/maisara-caverns-dungeon-overview-location-rewards",
+      "boss": "Muro'jin > https://www.wowhead.com/item=251174/deceivers-rotbow",
+      "dropSource": "Muro'jin > https://www.wowhead.com/item=251174/deceivers-rotbow",
+      "itemUrl": "https://www.wowhead.com/item=251174",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/maisara-caverns-dungeon-overview-location-rewards",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Head",
@@ -24,7 +30,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249988",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Neck",
@@ -33,7 +44,12 @@
       "source": "Midnight Falls",
       "sourceType": "raid",
       "sourceGuideId": 33234,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-midnight-falls-boss-strategy-abilities",
+      "boss": "L'ura > https://www.wowhead.com/item=250247/amulet-of-the-abyssal-hymn",
+      "dropSource": "L'ura > https://www.wowhead.com/item=250247/amulet-of-the-abyssal-hymn",
+      "itemUrl": "https://www.wowhead.com/item=250247",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-midnight-falls-boss-strategy-abilities",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Shoulders",
@@ -42,7 +58,12 @@
       "source": "Seat of the Triumvirate",
       "sourceType": "dungeon",
       "sourceGuideId": 33200,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/seat-of-the-triumvirate-dungeon-overview-mythicplus",
+      "boss": "Saprish",
+      "dropSource": "Saprish",
+      "itemUrl": "https://www.wowhead.com/item=151323",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/seat-of-the-triumvirate-dungeon-overview-mythicplus",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Cloak",
@@ -51,7 +72,12 @@
       "source": "Skyreach",
       "sourceType": "dungeon",
       "sourceGuideId": 33199,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/skyreach-dungeon-overview-mythicplus",
+      "boss": "Ranjit > https://www.wowhead.com/item=258575/rigid-scale-greatcloak",
+      "dropSource": "Ranjit > https://www.wowhead.com/item=258575/rigid-scale-greatcloak",
+      "itemUrl": "https://www.wowhead.com/item=258575",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/skyreach-dungeon-overview-mythicplus",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Chest",
@@ -60,7 +86,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249991",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Wrist",
@@ -69,7 +100,12 @@
       "source": "Nexus Point Xenas",
       "sourceType": "dungeon",
       "sourceGuideId": 33182,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/nexus-point-xenas-dungeon-overview-location-rewards",
+      "boss": "Corewarden Nysarra > https://www.wowhead.com/item=251209/corewarden-cuffs",
+      "dropSource": "Corewarden Nysarra > https://www.wowhead.com/item=251209/corewarden-cuffs",
+      "itemUrl": "https://www.wowhead.com/item=251209",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/nexus-point-xenas-dungeon-overview-location-rewards",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Gloves",
@@ -78,7 +114,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249989",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Belt",
@@ -87,7 +128,12 @@
       "source": "Leatherworking",
       "sourceType": "crafted",
       "sourceGuideId": null,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=244611",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Legs",
@@ -96,7 +142,12 @@
       "source": "Tier Set",
       "sourceType": "tier",
       "sourceGuideId": 31892,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=249987",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/season-1-tier-set-bonus-appearance-overview",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Boots",
@@ -105,7 +156,12 @@
       "source": "Leatherworking",
       "sourceType": "crafted",
       "sourceGuideId": null,
-      "sourceUrl": null
+      "sourceUrl": null,
+      "boss": null,
+      "dropSource": null,
+      "itemUrl": "https://www.wowhead.com/item=244610",
+      "dropSourceUrl": null,
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Ring",
@@ -114,7 +170,12 @@
       "source": "Midnight Falls",
       "sourceType": "raid",
       "sourceGuideId": 33234,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-midnight-falls-boss-strategy-abilities",
+      "boss": "L'ura > https://www.wowhead.com/item=249920/eye-of-midnight",
+      "dropSource": "L'ura > https://www.wowhead.com/item=249920/eye-of-midnight",
+      "itemUrl": "https://www.wowhead.com/item=249920",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-midnight-falls-boss-strategy-abilities",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Ring",
@@ -123,7 +184,12 @@
       "source": "Lightblinded Vanguard",
       "sourceType": "raid",
       "sourceGuideId": 33227,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/the-voidspire-lightblinded-vanguard-boss-strategy-abilities",
+      "boss": "War Chaplain Senn > https://www.wowhead.com/item=249369/bond-of-light",
+      "dropSource": "War Chaplain Senn > https://www.wowhead.com/item=249369/bond-of-light",
+      "itemUrl": "https://www.wowhead.com/item=249369",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/the-voidspire-lightblinded-vanguard-boss-strategy-abilities",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Trinket",
@@ -132,7 +198,12 @@
       "source": "Belo'ren",
       "sourceType": "raid",
       "sourceGuideId": 33233,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-beloren-boss-strategy-abilities",
+      "boss": "Belo'ren",
+      "dropSource": "Belo'ren",
+      "itemUrl": "https://www.wowhead.com/item=249806",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-beloren-boss-strategy-abilities",
+      "enrichmentMethod": "wowhead-xml"
     },
     {
       "slot": "Trinket",
@@ -141,7 +212,12 @@
       "source": "Algeth'ar Academy",
       "sourceType": "dungeon",
       "sourceGuideId": 33197,
-      "sourceUrl": null
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/algethar-academy-dungeon-overview-mythic-plus",
+      "boss": "Echo of Doragosa",
+      "dropSource": "Echo of Doragosa",
+      "itemUrl": "https://www.wowhead.com/item=193701",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/algethar-academy-dungeon-overview-mythic-plus",
+      "enrichmentMethod": "wowhead-xml"
     }
   ]
 }
