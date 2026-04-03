@@ -1,12 +1,1 @@
-[
-  {
-    "itemId": 249806,
-    "name": "Radiant Plume",
-    "slot": "Trinket",
-    "source": "Belo'ren",
-    "sourceType": "raid",
-    "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/march-on-quel-danas-beloren-boss-strategy-abilities",
-    "itemUrl": "https://www.wowhead.com/item=249806",
-    "enrichmentMethod": "wowhead-xml"
-  }
-]
+[]
