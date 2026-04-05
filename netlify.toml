@@ -1,0 +1,12 @@
+[build]
+  publish = "site"
+  functions = "netlify/functions"
+  command = "mkdir -p site/data && cp data/bm-hunter-bis.json site/data/bm-hunter-bis.json"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/character-gear"
+  to = "/.netlify/functions/character-gear"
+  status = 200
