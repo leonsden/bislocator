@@ -13,16 +13,64 @@
       <p class="subtitle">Beast Mastery Hunter · Midnight Season 1</p>
     </div>
     <div class="header-actions">
-      <button id="refresh-data-btn" class="secondary-btn" type="button">Reload Data</button>
+      <button id="refresh-data-btn" class="secondary-btn" type="button">Reload BiS Data</button>
     </div>
   </header>
 
   <main class="layout">
+    <section class="card lookup-card">
+      <div class="section-header">
+        <div>
+          <h2>Character Lookup</h2>
+          <p class="muted">Load your character from Blizzard, save it locally, and personalize the recommendations.</p>
+        </div>
+      </div>
+
+      <form id="character-form" class="controls-grid">
+        <label>
+          <span>Region</span>
+          <select id="region-input">
+            <option value="us">US</option>
+            <option value="eu">EU</option>
+            <option value="kr">KR</option>
+            <option value="tw">TW</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Realm</span>
+          <input id="realm-input" type="text" placeholder="Stormrage" required />
+        </label>
+
+        <label>
+          <span>Character Name</span>
+          <input id="name-input" type="text" placeholder="Yourhunter" required />
+        </label>
+
+        <label>
+          <span>Saved Characters</span>
+          <select id="saved-characters-select">
+            <option value="">Choose a saved character</option>
+          </select>
+        </label>
+      </form>
+
+      <div class="action-row">
+        <button id="load-character-btn" class="primary-btn" type="button">Load Character</button>
+        <button id="refresh-character-btn" class="secondary-btn" type="button">Refresh Character</button>
+        <button id="save-character-btn" class="secondary-btn" type="button">Save Character</button>
+        <button id="delete-character-btn" class="danger-btn" type="button">Delete Saved</button>
+      </div>
+
+      <div id="character-status" class="status-box muted">No character loaded yet.</div>
+      <div class="stats-grid" id="character-summary"></div>
+    </section>
+
     <section class="card controls-card">
       <div class="controls-top">
         <div>
           <h2>Filters</h2>
-          <p class="muted">Start with the cached Wowhead BiS data.</p>
+          <p class="muted">Search or narrow the cached BiS data.</p>
         </div>
       </div>
 
@@ -44,6 +92,15 @@
         </label>
 
         <label>
+          <span>Ownership</span>
+          <select id="ownership-filter">
+            <option value="all">All</option>
+            <option value="missing">Missing Only</option>
+            <option value="owned">Owned Only</option>
+          </select>
+        </label>
+
+        <label>
           <span>Sort Items By</span>
           <select id="sort-filter">
             <option value="slot">Slot</option>
@@ -61,7 +118,7 @@
       <div class="section-header">
         <div>
           <h2>Best Content to Run</h2>
-          <p class="muted">Grouped by instance or source. This is the first scoring version.</p>
+          <p class="muted">Now scored from the items you are still missing.</p>
         </div>
       </div>
       <div id="priority-list" class="priority-list"></div>
@@ -71,7 +128,7 @@
       <div class="section-header">
         <div>
           <h2>All BiS Items</h2>
-          <p class="muted">Directly from your generated JSON.</p>
+          <p class="muted">Owned items are highlighted after a character loads.</p>
         </div>
         <div id="item-count" class="pill"></div>
       </div>
@@ -79,6 +136,7 @@
         <table>
           <thead>
             <tr>
+              <th>Status</th>
               <th>Slot</th>
               <th>Item</th>
               <th>Source Type</th>
