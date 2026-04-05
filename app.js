@@ -1,5 +1,5 @@
 const DATA_PATH = "./data/bm-hunter-bis.json";
-const CHARACTER_API_PATH = "/api/character-gear";
+const CHARACTER_API_PATH = "/.netlify/functions/character-gear";
 const SAVED_CHARACTERS_KEY = "bislocator.savedCharacters";
 const LAST_CHARACTER_KEY = "bislocator.lastCharacter";
 
