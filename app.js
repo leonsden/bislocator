@@ -1,5 +1,11 @@
-const DATA_PATH = "./data/bm-hunter-bis.json";
-const CHARACTER_API_PATH = "/.netlify/functions/character-gear";
+const IS_GITHUB_PAGES = window.location.hostname === "leonsden.github.io";
+const DATA_PATH = IS_GITHUB_PAGES
+  ? "/bislocator/data/bm-hunter-bis.json"
+  : "/data/bm-hunter-bis.json";
+
+const CHARACTER_API_BASE = "https://bislocator.netlify.app";
+const CHARACTER_API_PATH = `${CHARACTER_API_BASE}/.netlify/functions/character-gear`;
+
 const SAVED_CHARACTERS_KEY = "bislocator.savedCharacters";
 const LAST_CHARACTER_KEY = "bislocator.lastCharacter";
 
@@ -337,14 +343,22 @@ async function loadCharacter() {
   setStatus("Loading character...", "muted");
 
   try {
-    const url = new URL(CHARACTER_API_PATH, window.location.origin);
+    const url = new URL(CHARACTER_API_PATH);
     url.searchParams.set("region", region);
     url.searchParams.set("realm", realm);
     url.searchParams.set("name", name);
 
     const response = await fetch(url);
-    const data = await response.json();
-
+    const contentType = response.headers.get("content-type") || "";
+    const rawText = await response.text();
+    
+    let data;
+    if (contentType.includes("application/json")) {
+      data = JSON.parse(rawText);
+    } else {
+      throw new Error(`Character lookup returned non-JSON response (${response.status}). URL: ${url.toString()}`);
+    }
+    
     if (!response.ok) {
       throw new Error(data.error || `Character lookup failed (${response.status})`);
     }
