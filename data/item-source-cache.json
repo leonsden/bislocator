@@ -35,6 +35,15 @@
     "dropSourceUrl": null,
     "itemUrl": "https://www.wowhead.com/item=244611"
   },
+  "249343": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Chimaerus",
+    "boss": "Chimaerus",
+    "dropSource": "Chimaerus",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/the-dreamrift-chimaerus-boss-strategy-abilities-rewards",
+    "itemUrl": "https://www.wowhead.com/item=249343"
+  },
   "249369": {
     "method": "wowhead-xml",
     "sourceType": "raid",
