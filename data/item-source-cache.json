@@ -26,6 +26,15 @@
     "dropSourceUrl": null,
     "itemUrl": "https://www.wowhead.com/item=239656"
   },
+  "244581": {
+    "method": "wowhead-xml",
+    "sourceType": "crafted",
+    "instance": "Leatherworking",
+    "boss": null,
+    "dropSource": null,
+    "dropSourceUrl": null,
+    "itemUrl": "https://www.wowhead.com/item=244581"
+  },
   "244584": {
     "method": "wowhead-xml",
     "sourceType": "crafted",
@@ -161,6 +170,15 @@
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/nexus-point-xenas-dungeon-overview-location-rewards",
     "itemUrl": "https://www.wowhead.com/item=251209"
   },
+  "252258": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Voidscar Arena",
+    "boss": "Atroxus",
+    "dropSource": "Atroxus",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/voidscar-arena-dungeon-overview-location-rewards",
+    "itemUrl": "https://www.wowhead.com/item=252258"
+  },
   "258575": {
     "method": "wowhead-xml",
     "sourceType": "dungeon",
@@ -169,6 +187,51 @@
     "dropSource": "Ranjit",
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/skyreach-dungeon-overview-mythicplus",
     "itemUrl": "https://www.wowhead.com/item=258575"
+  },
+  "268207": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Ula'tek",
+    "boss": "Ula'tek",
+    "dropSource": "Ula'tek",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=268207"
+  },
+  "268233": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Sszorak",
+    "boss": "Sszorak",
+    "dropSource": "Sszorak",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-sszorak-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=268233"
+  },
+  "268249": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Vashnik the Malignant",
+    "boss": "Vashnik the Malignant",
+    "dropSource": "Vashnik the Malignant",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-vashnik-the-malignant-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=268249"
+  },
+  "268253": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Coiled Altar",
+    "boss": "The Coiled Altar",
+    "dropSource": "The Coiled Altar",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-coiled-altar-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=268253"
+  },
+  "268265": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Ula'tek",
+    "boss": "Ula'tek",
+    "dropSource": "Ula'tek",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=268265"
   },
   "268287": {
     "method": "wowhead-xml",
@@ -196,5 +259,77 @@
     "dropSource": "Rotmire",
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/sporefall-overview-location-rewards-boss",
     "itemUrl": "https://www.wowhead.com/item=268291"
+  },
+  "270164": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Lost Explorers",
+    "boss": "The Lost Explorers",
+    "dropSource": "The Lost Explorers",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-lost-explorers-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=270164"
+  },
+  "270173": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Coiled Altar",
+    "boss": "The Coiled Altar",
+    "dropSource": "The Coiled Altar",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-coiled-altar-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=270173"
+  },
+  "270175": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Ula'tek",
+    "boss": "Ula'tek",
+    "dropSource": "Ula'tek",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=270175"
+  },
+  "271490": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Coiled Altar",
+    "boss": "The Coiled Altar",
+    "dropSource": "The Coiled Altar",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-coiled-altar-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=271490"
+  },
+  "271491": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Coiled Altar",
+    "boss": "The Coiled Altar",
+    "dropSource": "The Coiled Altar",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-coiled-altar-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=271491"
+  },
+  "271492": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "The Twin Fangs",
+    "boss": "The Twin Fangs",
+    "dropSource": "The Twin Fangs",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-twin-fangs-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=271492"
+  },
+  "271493": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "King's Rest",
+    "boss": "King's Rest",
+    "dropSource": "King's Rest",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/kings-rest-dungeon-overview-mythic-plus",
+    "itemUrl": "https://www.wowhead.com/item=271493"
+  },
+  "271495": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Ula'tek",
+    "boss": "Ula'tek",
+    "dropSource": "Ula'tek",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=271495"
   }
 }
