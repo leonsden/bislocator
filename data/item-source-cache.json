@@ -269,6 +269,15 @@
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-lost-explorers-boss-strategy-abilities",
     "itemUrl": "https://www.wowhead.com/item=270164"
   },
+  "270165": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Entombed Sentinels",
+    "boss": "Breath of Ula'tek",
+    "dropSource": "Breath of Ula'tek",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-entombed-sentinels-boss-strategy-abilities",
+    "itemUrl": "https://www.wowhead.com/item=270165"
+  },
   "270173": {
     "method": "wowhead-xml",
     "sourceType": "raid",

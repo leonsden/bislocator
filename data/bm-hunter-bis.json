@@ -4,9 +4,9 @@
     "site": "Wowhead",
     "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
     "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
-    "updatedAt": "2026-08-12T22:54:46-05:00",
-    "scrapedAt": "2026-08-15T07:00:10.170Z",
-    "enrichedAt": "2026-08-15T07:00:10.372Z"
+    "updatedAt": "2026-08-15T12:37:21-05:00",
+    "scrapedAt": "2026-08-16T07:01:56.032Z",
+    "enrichedAt": "2026-08-16T07:01:56.996Z"
   },
   "items": [
     {
@@ -192,7 +192,7 @@
       "enrichmentMethod": "wowhead-xml"
     },
     {
-      "slot": "Trinket (Raid only)",
+      "slot": "Trinket",
       "itemId": 270173,
       "name": "Zul'jin's Guillotine Technique",
       "source": "The Coiled Altar",
@@ -206,7 +206,7 @@
       "enrichmentMethod": "wowhead-xml"
     },
     {
-      "slot": "Trinket (Alternative)",
+      "slot": "Trinket",
       "itemId": 270175,
       "name": "Voracious Heart of Ula'tek",
       "source": "Ula'tek",
@@ -220,17 +220,17 @@
       "enrichmentMethod": "wowhead-xml"
     },
     {
-      "slot": "Trinket (Alternative)",
-      "itemId": 270164,
-      "name": "Gebbo's Bottomless Bag",
-      "source": "The Lost Explorers",
+      "slot": "Trinket (Raid only)",
+      "itemId": 270165,
+      "name": "Keeper's Seething Core",
+      "source": "Entombed Sentinels",
       "sourceType": "raid",
-      "sourceGuideId": 34247,
-      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-lost-explorers-boss-strategy-abilities",
-      "boss": "The Lost Explorers",
-      "dropSource": "The Lost Explorers",
-      "itemUrl": "https://www.wowhead.com/item=270164",
-      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-lost-explorers-boss-strategy-abilities",
+      "sourceGuideId": 34245,
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-entombed-sentinels-boss-strategy-abilities",
+      "boss": "Breath of Ula'tek",
+      "dropSource": "Breath of Ula'tek",
+      "itemUrl": "https://www.wowhead.com/item=270165",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-entombed-sentinels-boss-strategy-abilities",
       "enrichmentMethod": "wowhead-xml"
     }
   ]
