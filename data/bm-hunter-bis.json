@@ -4,9 +4,9 @@
     "site": "Wowhead",
     "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
     "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
-    "updatedAt": "2026-08-21T02:12:31-05:00",
-    "scrapedAt": "2026-08-29T12:43:43.637Z",
-    "enrichedAt": "2026-08-29T12:43:44.214Z"
+    "updatedAt": "2026-08-30T03:55:12-05:00",
+    "scrapedAt": "2026-08-30T11:59:12.845Z",
+    "enrichedAt": "2026-08-30T11:59:13.730Z"
   },
   "items": [
     {
@@ -151,16 +151,16 @@
     },
     {
       "slot": "Boots",
-      "itemId": 268233,
-      "name": "Ferocious Scaleboots",
-      "source": "Sszorak",
+      "itemId": 159388,
+      "name": "Sabatons of Coruscating Energy",
+      "source": "Temple of Sethraliss",
       "sourceType": "raid",
-      "sourceGuideId": 34249,
-      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-sszorak-boss-strategy-abilities",
-      "boss": "Sszorak",
-      "dropSource": "Sszorak",
-      "itemUrl": "https://www.wowhead.com/item=268233",
-      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-sszorak-boss-strategy-abilities",
+      "sourceGuideId": 34262,
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/temple-of-sethraliss-dungeon-overview-mythic-plus",
+      "boss": "Temple of Sethraliss",
+      "dropSource": "Temple of Sethraliss",
+      "itemUrl": "https://www.wowhead.com/item=159388",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/temple-of-sethraliss-dungeon-overview-mythic-plus",
       "enrichmentMethod": "wowhead-xml"
     },
     {

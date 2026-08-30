@@ -8,6 +8,15 @@
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/seat-of-the-triumvirate-dungeon-overview-mythicplus",
     "itemUrl": "https://www.wowhead.com/item=151323"
   },
+  "159388": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Temple of Sethraliss",
+    "boss": "Temple of Sethraliss",
+    "dropSource": "Temple of Sethraliss",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/temple-of-sethraliss-dungeon-overview-mythic-plus",
+    "itemUrl": "https://www.wowhead.com/item=159388"
+  },
   "193701": {
     "method": "wowhead-xml",
     "sourceType": "dungeon",
