@@ -4,9 +4,9 @@
     "site": "Wowhead",
     "url": "https://www.wowhead.com/guide/classes/hunter/beast-mastery/bis-gear",
     "title": "Beast Mastery Hunter Gear and Best in Slot - Midnight - Wowhead",
-    "updatedAt": "2026-09-04T08:50:06-05:00",
-    "scrapedAt": "2026-09-06T11:03:24.397Z",
-    "enrichedAt": "2026-09-06T11:03:24.567Z"
+    "updatedAt": "2026-09-07T07:22:07-05:00",
+    "scrapedAt": "2026-09-07T12:43:12.291Z",
+    "enrichedAt": "2026-09-07T12:43:13.219Z"
   },
   "items": [
     {
@@ -220,17 +220,17 @@
       "enrichmentMethod": "wowhead-xml"
     },
     {
-      "slot": "Trinket (Raid only)",
-      "itemId": 270165,
-      "name": "Keeper's Seething Core",
-      "source": "Entombed Sentinels",
+      "slot": "Trinket (Situationally)",
+      "itemId": 270168,
+      "name": "Font of Venomous Rage",
+      "source": "Ula'tek",
       "sourceType": "raid",
-      "sourceGuideId": 34245,
-      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-entombed-sentinels-boss-strategy-abilities",
-      "boss": "Breath of Ula'tek",
-      "dropSource": "Breath of Ula'tek",
-      "itemUrl": "https://www.wowhead.com/item=270165",
-      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-entombed-sentinels-boss-strategy-abilities",
+      "sourceGuideId": 34252,
+      "sourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
+      "boss": "Ula'tek",
+      "dropSource": "Ula'tek",
+      "itemUrl": "https://www.wowhead.com/item=270168",
+      "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
       "enrichmentMethod": "wowhead-xml"
     }
   ]
