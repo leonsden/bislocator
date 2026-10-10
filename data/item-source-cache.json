@@ -358,5 +358,23 @@
     "dropSource": "Ula'tek",
     "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-ulatek-boss-strategy-abilities",
     "itemUrl": "https://www.wowhead.com/item=271495"
+  },
+  "281029": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Kith'ix",
+    "boss": "Kith'ix",
+    "dropSource": "Kith'ix",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/the-unbinding-of-kithix-boss-strategy-abilities-rewards",
+    "itemUrl": "https://www.wowhead.com/item=281029"
+  },
+  "281215": {
+    "method": "wowhead-xml",
+    "sourceType": "raid",
+    "instance": "Kith'ix",
+    "boss": "Kith'ix",
+    "dropSource": "Kith'ix",
+    "dropSourceUrl": "https://www.wowhead.com/guide/midnight/raids/the-unbinding-of-kithix-boss-strategy-abilities-rewards",
+    "itemUrl": "https://www.wowhead.com/item=281215"
   }
 }
